@@ -28,11 +28,11 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Template | thecolab.ai",
+    default: "The cost-of-living squeeze | thecolab.ai",
     template: "%s | thecolab.ai",
   },
   description:
-    "AI expertise, built together — a starter template by thecolab.ai, New Zealand's community-driven AI consultancy.",
+    "NZ cost-of-living & child-poverty tools — real Stats NZ, MBIE, MSD and University of Otago data brought together by AI. A thecolab.ai Impact for Good experiment.",
   icons: [{ rel: "icon", url: "/favicon.svg", type: "image/svg+xml" }],
 };
 
