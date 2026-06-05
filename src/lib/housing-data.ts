@@ -218,8 +218,9 @@ export const HOUSING_CENTRES: HousingCentre[] = [
 
 export const HOUSING_CONTEXT: HousingContextFact[] = [
   {
-    fact: "769,954 people receive the Accommodation Supplement, costing about $84.9m every week \u2014 a structural subsidy that exists because market rents far outrun low incomes.",
-    source: "HUD, Dec 2024 (via thecolab.ai poverty report)",
+    fact: "385,025 households receive the Accommodation Supplement, costing about $42.5m every week (\u2248$2.2b a year) \u2014 a structural subsidy that exists because market rents far outrun low incomes.",
+    source:
+      "public-housing-nz skill \u2014 HUD Accommodation Supplement recipients & weekly spend (data.govt.nz), as at 1 Dec 2024",
   },
   {
     fact: "After-housing-costs child poverty (210,600) runs far above the before-housing-costs measure (148,700): roughly 62,000 children are poor purely because of housing costs.",

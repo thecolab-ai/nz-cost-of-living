@@ -69,10 +69,11 @@ const METHODS: MethodEntry[] = [
     source: HOUSING_SOURCE_LINE,
   },
   {
-    label: "769,954 AS recipients · $84.9m per week",
+    label: "385,025 AS recipients · $42.5m per week",
     calculation:
-      "Reported counts: 769,954 people receive the Accommodation Supplement, at a total cost of about $84.9m every week. Not calculated here.",
-    source: "HUD, Dec 2024 (via thecolab.ai poverty report)",
+      "National Accommodation Supplement recipients and weekly spend, summed across the 12 MSD regions in the HUD dataset: 385,025 recipients, $42,451,479/week (≈$2.2b/yr). Corrects an earlier 769,954 / $84.9m figure that double-counted overlapping area levels.",
+    source:
+      "public-housing-nz skill — HUD Accommodation Supplement recipients & weekly spend (data.govt.nz), as at 1 Dec 2024",
   },
   {
     label: "Chart: Rent vs maximum Accommodation Supplement",
@@ -175,14 +176,14 @@ export default function HousingPage() {
           <CardContent className="pt-5">
             <div className="flex items-center gap-1.5">
               <p className="font-mono font-serif text-3xl text-brand-indigo tabular-nums">
-                769,954
+                385,025
               </p>
               <MethodInfo {...METHODS[2]} />
             </div>
             <p className="mt-1 text-brand-slate-dark text-sm">
-              people receive the Accommodation Supplement, costing about $84.9m
-              every week
-              <span className="text-brand-slate-muted"> (HUD, Dec 2024)</span>
+              households receive the Accommodation Supplement, costing about
+              $42.5m every week
+              <span className="text-brand-slate-muted"> (HUD, 1 Dec 2024)</span>
             </p>
           </CardContent>
         </Card>
