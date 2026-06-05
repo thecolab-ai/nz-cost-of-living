@@ -1,11 +1,16 @@
 import { VercelToolbar } from "@vercel/toolbar/next";
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono, Playfair_Display } from "next/font/google";
+import Link from "next/link";
 import type { ReactNode } from "react";
 
 import "@/styles/globals.css";
 import { RegistrySidebar } from "@/app/registry-sidebar";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -50,6 +55,17 @@ export default function RootLayout({
         <SidebarProvider>
           <RegistrySidebar />
           <SidebarInset>
+            {/* Mobile top bar — the sidebar is a hidden sheet on small screens,
+                so this provides the trigger to open it. Hidden on md+ where the
+                sidebar is always visible. */}
+            <header className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/80 md:hidden print:hidden">
+              <SidebarTrigger className="-ml-1" />
+              <Link href="/" className="flex items-center gap-2">
+                <span className="font-serif font-bold text-base text-brand-navy">
+                  thecolab<span className="text-brand-cyan">.ai</span>
+                </span>
+              </Link>
+            </header>
             <div className="flex min-h-screen flex-col">{children}</div>
           </SidebarInset>
         </SidebarProvider>
