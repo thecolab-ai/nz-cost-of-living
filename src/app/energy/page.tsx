@@ -21,6 +21,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { CPI_SOURCE_LINE, cpiRebasedTo } from "@/lib/cpi-data";
 import {
   ENERGY_CONTEXT_FACTS,
   ENERGY_DISCLAIMER,
@@ -43,9 +44,12 @@ const COLORS = {
   grid: "#E7E5E4",
 } as const;
 
-const chartConfig = Object.fromEntries(
-  ENERGY_SERIES.map((s) => [s.key, { label: s.label, color: s.color }]),
-) satisfies ChartConfig;
+const chartConfig = {
+  ...Object.fromEntries(
+    ENERGY_SERIES.map((s) => [s.key, { label: s.label, color: s.color }]),
+  ),
+  cpi: { label: "Headline CPI", color: COLORS.navy },
+} satisfies ChartConfig;
 
 const MONTHS = [
   "Jan",
@@ -97,6 +101,10 @@ const METHODS: MethodEntry[] = [
 ];
 
 export default function EnergyPage() {
+  // Headline CPI (all groups) rebased to 100 at Jan 2019 — same base as the
+  // electricity/gas series — so it reads as a general-inflation benchmark.
+  const cpi = useMemo(() => cpiRebasedTo(EPI_DATES), []);
+
   // Rebase each series to 100 at Jan 2019 so divergence reads at a glance.
   const lineData = useMemo(() => {
     const rebased = new Map<EnergySeriesKey, number[]>();
@@ -106,9 +114,11 @@ export default function EnergyPage() {
       for (const s of ENERGY_SERIES) {
         row[s.key] = (rebased.get(s.key) as number[])[i];
       }
+      const cpiVal = cpi[i];
+      if (cpiVal != null) row.cpi = cpiVal;
       return row;
     });
-  }, []);
+  }, [cpi]);
 
   const elecCumulative = cumulativeChangePct(getSeries("electricity").values);
   const gasCumulative = cumulativeChangePct(getSeries("gas").values);
@@ -205,7 +215,7 @@ export default function EnergyPage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* Legend pills (static — only two series) */}
+          {/* Legend pills (static — two series + CPI benchmark) */}
           <div className="flex flex-wrap gap-2">
             {ENERGY_SERIES.map((s) => (
               <span
@@ -219,6 +229,13 @@ export default function EnergyPage() {
                 {s.label}
               </span>
             ))}
+            <span className="inline-flex items-center gap-2 rounded-full border border-stone-200 px-3 py-1 text-brand-slate-dark text-xs">
+              <span
+                className="inline-block h-0 w-3.5 border-t-2 border-dashed"
+                style={{ borderColor: COLORS.navy }}
+              />
+              Headline CPI
+            </span>
           </div>
 
           <ChartContainer
@@ -270,16 +287,24 @@ export default function EnergyPage() {
                   <ChartTooltipContent
                     labelFormatter={(label) => formatDate(String(label))}
                     formatter={(value, name) => {
+                      const isCpi = name === "cpi";
                       const s = ENERGY_SERIES.find((g) => g.key === name);
                       const pct = Number(value) - 100;
                       return (
                         <div className="flex w-full items-center justify-between gap-3">
                           <span className="flex items-center gap-1.5 text-muted-foreground">
-                            <span
-                              className="size-2 rounded-full"
-                              style={{ backgroundColor: s?.color }}
-                            />
-                            {s?.shortLabel ?? name}
+                            {isCpi ? (
+                              <span
+                                className="inline-block h-0 w-3 border-t-2 border-dashed"
+                                style={{ borderColor: COLORS.navy }}
+                              />
+                            ) : (
+                              <span
+                                className="size-2 rounded-full"
+                                style={{ backgroundColor: s?.color }}
+                              />
+                            )}
+                            {isCpi ? "Headline CPI" : (s?.shortLabel ?? name)}
                           </span>
                           <span className="font-mono text-foreground tabular-nums">
                             {fmtPct(pct)}
@@ -308,11 +333,25 @@ export default function EnergyPage() {
                 activeDot={{ r: 4 }}
                 isAnimationActive={false}
               />
+              <Line
+                type="monotone"
+                dataKey="cpi"
+                name="Headline CPI"
+                stroke={COLORS.navy}
+                strokeDasharray="5 4"
+                strokeWidth={2}
+                dot={false}
+                activeDot={{ r: 4 }}
+                isAnimationActive={false}
+              />
             </LineChart>
           </ChartContainer>
           <p className="text-brand-slate-muted text-xs">
             Each line is a Stats NZ price index rebased so January 2019 = 100. A
-            value of 133 means power is 33% dearer than in January 2019.
+            value of 133 means power is 33% dearer than in January 2019. The
+            dashed navy line is headline CPI (all groups) on the same base —
+            both electricity and gas sit well above it, so power has far
+            outpaced general inflation.
           </p>
         </CardContent>
       </Card>
@@ -418,6 +457,7 @@ export default function EnergyPage() {
       {/* Source + disclaimer */}
       <footer className="relative mx-auto mt-10 max-w-5xl space-y-2 border-stone-200 border-t pt-4 text-brand-slate-muted text-xs">
         <p>{ENERGY_SOURCE_LINE}</p>
+        <p>{CPI_SOURCE_LINE}</p>
         <p>{ENERGY_DISCLAIMER}</p>
       </footer>
     </main>

@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  BookOpen,
   Building2,
   FileText,
   Hammer,
@@ -63,6 +64,7 @@ const NAV_GROUPS: {
   {
     label: "About & methodology",
     items: [
+      { href: "/report", label: "Full report", icon: BookOpen },
       { href: "/brief", label: "State of Play brief", icon: FileText },
       { href: "/why", label: 'Why "for good"', icon: HeartHandshake },
       { href: "/how-its-built", label: "How it's built", icon: Hammer },

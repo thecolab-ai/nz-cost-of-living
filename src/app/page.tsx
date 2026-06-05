@@ -281,6 +281,30 @@ export default function Home() {
         </CardContent>
       </Card>
 
+      {/* Full report CTA */}
+      <Card className="relative mx-auto mt-6 max-w-5xl overflow-hidden pt-0">
+        <div className="h-1 w-full rounded-t-md bg-gradient-to-r from-brand-orange to-brand-cyan" />
+        <CardHeader className="pt-5">
+          <p className="font-medium text-brand-cyan-dark text-xs uppercase tracking-wide">
+            Read it all · The evidence in full
+          </p>
+          <CardTitle className="font-serif text-brand-navy">
+            Read the full report
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="max-w-2xl text-brand-slate-muted text-sm">
+            The long-form brief behind these tools — who is poor in Aotearoa,
+            where hardship pools by postcode and ethnicity, how housing
+            multiplies it, and the eight evidence-led levers that would move it.
+            Eleven sections, every figure sourced.
+          </p>
+          <Button asChild variant="default">
+            <Link href="/report">Read the full report →</Link>
+          </Button>
+        </CardContent>
+      </Card>
+
       {/* Methodology & sources */}
       <MethodologyPanel entries={METHODS} />
 

@@ -36,6 +36,7 @@ import {
   getBasket,
   pctOfJobseeker,
 } from "@/lib/basket-data";
+import { CPI_SOURCE_LINE, cpiRebasedTo } from "@/lib/cpi-data";
 
 const COLORS = {
   navy: "#1C1917",
@@ -46,9 +47,12 @@ const COLORS = {
   grid: "#E7E5E4",
 } as const;
 
-const chartConfig = Object.fromEntries(
-  BASKETS.map((b) => [b.key, { label: b.title, color: b.color }]),
-) satisfies ChartConfig;
+const chartConfig = {
+  ...Object.fromEntries(
+    BASKETS.map((b) => [b.key, { label: b.title, color: b.color }]),
+  ),
+  cpi: { label: "Headline CPI", color: COLORS.navy },
+} satisfies ChartConfig;
 
 // Per-figure method + source for every basket card and the history chart.
 const METHODS: MethodEntry[] = [
@@ -97,15 +101,27 @@ export default function BasketPage() {
   const [selected, setSelected] = useState<BasketKey>(DEFAULT_BASKET);
   const sel = getBasket(selected);
 
+  // Headline CPI rebased to 100 at Jan-2022 (the basket history's start), then
+  // scaled into dollars off the SELECTED basket's Jan-2022 cost so it shares the
+  // $ axis: a counterfactual "what this shop would cost if it had only tracked
+  // general inflation". Recomputes when the selected basket changes.
+  const cpi = useMemo(() => cpiRebasedTo(BASKET_DATES), []);
+  const cpiDollars = useMemo(
+    () => cpi.map((v) => (v == null ? null : (v / 100) * sel.costHistory[0])),
+    [cpi, sel.costHistory],
+  );
+
   // All three basket series in every row, so the chart can show the selected
-  // basket as an area and the other two as faint context lines.
+  // basket as an area and the other two as faint context lines, plus the CPI
+  // counterfactual line on the same $ axis.
   const chartData = useMemo(
     () =>
       BASKET_DATES.map((date, i) => ({
         date,
         ...Object.fromEntries(BASKETS.map((b) => [b.key, b.costHistory[i]])),
+        cpi: cpiDollars[i],
       })),
-    [],
+    [cpiDollars],
   );
 
   const cards = basketsByCost(); // dearest first
@@ -279,6 +295,24 @@ export default function BasketPage() {
                   <ChartTooltipContent
                     labelFormatter={(label) => formatDate(String(label))}
                     formatter={(value, name) => {
+                      // The CPI counterfactual line: a dashed benchmark, not a
+                      // basket — render it with a dashed swatch + label.
+                      if (name === "cpi") {
+                        return (
+                          <div className="flex w-full items-center justify-between gap-3">
+                            <span className="flex items-center gap-1.5 text-muted-foreground">
+                              <span
+                                className="inline-block h-0 w-3 border-t-2 border-dashed"
+                                style={{ borderColor: COLORS.navy }}
+                              />
+                              If it had only tracked CPI
+                            </span>
+                            <span className="font-mono text-muted-foreground tabular-nums">
+                              {dollar2(Number(value))}/wk
+                            </span>
+                          </div>
+                        );
+                      }
                       const b = BASKETS.find((x) => x.key === name);
                       const isSel = name === selected;
                       return (
@@ -336,6 +370,20 @@ export default function BasketPage() {
                 activeDot={{ r: 4 }}
                 isAnimationActive={false}
               />
+              {/* CPI counterfactual: a dashed benchmark drawn on top — what the
+                  selected shop would cost if it had only tracked general
+                  inflation since Jan 2022. */}
+              <Line
+                type="monotone"
+                dataKey="cpi"
+                name="cpi"
+                stroke={COLORS.navy}
+                strokeWidth={2}
+                strokeDasharray="5 4"
+                dot={false}
+                activeDot={{ r: 3 }}
+                isAnimationActive={false}
+              />
               <ReferenceDot
                 x={BASKET_DATES.at(-1)}
                 y={sel.totalWeekly}
@@ -355,11 +403,40 @@ export default function BasketPage() {
               </ReferenceDot>
             </AreaChart>
           </ChartContainer>
+          {/* Legend — selected basket, faint context lines, and the dashed CPI
+              benchmark. */}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-brand-slate-muted text-xs">
+            <span className="inline-flex items-center gap-1.5">
+              <span
+                className="size-2.5 rounded-full"
+                style={{ backgroundColor: sel.color }}
+              />
+              {sel.title} (selected)
+            </span>
+            {others.map((b) => (
+              <span key={b.key} className="inline-flex items-center gap-1.5">
+                <span
+                  className="size-2.5 rounded-full opacity-30"
+                  style={{ backgroundColor: b.color }}
+                />
+                {b.title}
+              </span>
+            ))}
+            <span className="inline-flex items-center gap-1.5">
+              <span
+                className="inline-block h-0 w-4 border-t-2 border-dashed"
+                style={{ borderColor: COLORS.navy }}
+              />
+              If it had only tracked CPI
+            </span>
+          </div>
           <p className="text-brand-slate-muted text-xs">
             Today's point is the live Woolworths NZ basket total. Earlier points
             re-price the same basket through Stats NZ Food Price Index sub-group
             movements — indicative of how this shop's cost has moved, not a
-            historical receipt.
+            historical receipt. The dashed line is headline CPI (all groups),
+            rebased to this shop's Jan-2022 cost: where the basket sits above
+            it, it has grown dearer than general inflation.
           </p>
         </CardContent>
       </Card>
@@ -495,6 +572,7 @@ export default function BasketPage() {
       {/* Source + disclaimer */}
       <footer className="relative mx-auto mt-10 max-w-5xl space-y-2 border-stone-200 border-t pt-4 text-brand-slate-muted text-xs">
         <p>{BASKET_SOURCE_LINE}</p>
+        <p>{CPI_SOURCE_LINE}</p>
         <p>{BASKET_DISCLAIMER}</p>
       </footer>
     </main>

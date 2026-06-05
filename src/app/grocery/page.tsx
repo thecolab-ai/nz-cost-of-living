@@ -25,6 +25,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { CPI_SOURCE_LINE, cpiRebasedTo } from "@/lib/cpi-data";
 import {
   FOOD_DISCLAIMER,
   FOOD_SOURCE_LINE,
@@ -46,9 +47,12 @@ const COLORS = {
   grid: "#E7E5E4",
 } as const;
 
-const chartConfig = Object.fromEntries(
-  FOOD_SUBGROUPS.map((g) => [g.key, { label: g.label, color: g.color }]),
-) satisfies ChartConfig;
+const chartConfig = {
+  ...Object.fromEntries(
+    FOOD_SUBGROUPS.map((g) => [g.key, { label: g.label, color: g.color }]),
+  ),
+  cpi: { label: "Headline CPI", color: COLORS.navy },
+} satisfies ChartConfig;
 
 const MONTHS = [
   "Jan",
@@ -129,18 +133,23 @@ export default function GroceryPage() {
       return next;
     });
 
+  // Headline CPI rebased to 100 at Jan 2022 — same base as the food series, so
+  // it reads as a general-inflation benchmark on the same axis. Always shown.
+  const cpi = useMemo(() => cpiRebasedTo(FPI_DATES), []);
+
   // Rebase every series to 100 at Jan 2022 so divergence reads at a glance.
   const lineData = useMemo(() => {
     const rebased = new Map<FoodSubgroupKey, number[]>();
     for (const g of FOOD_SUBGROUPS) rebased.set(g.key, rebaseToStart(g.values));
     return FPI_DATES.map((date, i) => {
-      const row: Record<string, number | string> = { date };
+      const row: Record<string, number | string | null> = { date };
       for (const g of FOOD_SUBGROUPS) {
         row[g.key] = (rebased.get(g.key) as number[])[i];
       }
+      row.cpi = cpi[i];
       return row;
     });
-  }, []);
+  }, [cpi]);
 
   // Latest annual change, ranked sharpest-first (all six groups).
   const annualData = useMemo(
@@ -275,6 +284,30 @@ export default function GroceryPage() {
                 </button>
               );
             })}
+            {/* Fixed benchmark — always shown, not a toggle. */}
+            <span
+              className="inline-flex items-center gap-2 rounded-full border border-stone-200 px-3 py-1 text-brand-slate-muted text-xs"
+              title="Headline CPI (all groups) — always shown as a benchmark"
+            >
+              <svg
+                width="14"
+                height="8"
+                viewBox="0 0 14 8"
+                aria-hidden="true"
+                className="shrink-0"
+              >
+                <line
+                  x1="0"
+                  y1="4"
+                  x2="14"
+                  y2="4"
+                  stroke={COLORS.navy}
+                  strokeWidth="2"
+                  strokeDasharray="5 4"
+                />
+              </svg>
+              Headline CPI
+            </span>
           </div>
 
           <ChartContainer
@@ -326,16 +359,37 @@ export default function GroceryPage() {
                   <ChartTooltipContent
                     labelFormatter={(label) => formatDate(String(label))}
                     formatter={(value, name) => {
+                      const isCpi = name === "cpi";
                       const g = FOOD_SUBGROUPS.find((s) => s.key === name);
                       const pct = Number(value) - 100;
                       return (
                         <div className="flex w-full items-center justify-between gap-3">
                           <span className="flex items-center gap-1.5 text-muted-foreground">
-                            <span
-                              className="size-2 rounded-full"
-                              style={{ backgroundColor: g?.color }}
-                            />
-                            {g?.shortLabel ?? name}
+                            {isCpi ? (
+                              <svg
+                                width="12"
+                                height="6"
+                                viewBox="0 0 12 6"
+                                aria-hidden="true"
+                                className="shrink-0"
+                              >
+                                <line
+                                  x1="0"
+                                  y1="3"
+                                  x2="12"
+                                  y2="3"
+                                  stroke={COLORS.navy}
+                                  strokeWidth="2"
+                                  strokeDasharray="5 4"
+                                />
+                              </svg>
+                            ) : (
+                              <span
+                                className="size-2 rounded-full"
+                                style={{ backgroundColor: g?.color }}
+                              />
+                            )}
+                            {isCpi ? "Headline CPI" : (g?.shortLabel ?? name)}
                           </span>
                           <span className="font-mono text-foreground tabular-nums">
                             {fmtPct(pct)}
@@ -358,12 +412,26 @@ export default function GroceryPage() {
                   isAnimationActive={false}
                 />
               ))}
+              {/* Fixed benchmark: headline CPI, drawn on top as a dashed line. */}
+              <Line
+                type="monotone"
+                dataKey="cpi"
+                name="cpi"
+                stroke={COLORS.navy}
+                strokeWidth={2}
+                strokeDasharray="5 4"
+                dot={false}
+                activeDot={{ r: 4 }}
+                isAnimationActive={false}
+              />
             </LineChart>
           </ChartContainer>
           <p className="text-brand-slate-muted text-xs">
             Each line is a Stats NZ Food Price Index subgroup, rebased so
             January 2022 = 100. A value of 120 means prices in that group are
-            20% higher than in January 2022.
+            20% higher than in January 2022. The dashed line is headline CPI
+            (all groups) on the same base — any series sitting above it is
+            outpacing general inflation.
           </p>
         </CardContent>
       </Card>
@@ -495,6 +563,7 @@ export default function GroceryPage() {
       {/* Source + disclaimer */}
       <footer className="relative mx-auto mt-10 max-w-5xl space-y-2 border-stone-200 border-t pt-4 text-brand-slate-muted text-xs">
         <p>{FOOD_SOURCE_LINE}</p>
+        <p>{CPI_SOURCE_LINE}</p>
         <p>{FOOD_DISCLAIMER}</p>
       </footer>
     </main>
