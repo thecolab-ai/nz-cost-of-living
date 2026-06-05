@@ -214,6 +214,32 @@ export default function Home() {
         ))}
       </div>
 
+      {/* Reason for hope */}
+      <Link
+        href="/report#whatsworking"
+        className="group relative mx-auto mb-6 block max-w-5xl rounded-xl transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cyan/50"
+      >
+        <Card className="overflow-hidden pt-0 transition-[border-color,box-shadow] group-hover:border-brand-cyan/40 group-hover:shadow-md">
+          <div className="h-1 w-full rounded-t-md bg-gradient-to-r from-brand-cyan to-brand-indigo" />
+          <CardContent className="flex flex-col gap-2 pt-5 sm:flex-row sm:items-center sm:justify-between">
+            <p className="max-w-3xl text-brand-slate-dark text-sm">
+              <span className="font-medium text-brand-navy">
+                And it&apos;s not hopeless.
+              </span>{" "}
+              The 2018&ndash;2022 package lifted around 66,500 children out of
+              after-housing-costs poverty before some gains unwound &mdash;
+              proof the levers work.
+            </p>
+            <span className="shrink-0 font-medium text-brand-cyan-dark text-sm">
+              What&apos;s working{" "}
+              <span className="inline-block transition-transform group-hover:translate-x-0.5">
+                &rarr;
+              </span>
+            </span>
+          </CardContent>
+        </Card>
+      </Link>
+
       {/* Tools */}
       <h2 className="relative mx-auto mt-10 mb-4 max-w-5xl font-serif font-bold text-2xl text-brand-navy">
         Seven ways in
@@ -296,8 +322,9 @@ export default function Home() {
           <p className="max-w-2xl text-brand-slate-muted text-sm">
             The long-form brief behind these tools — who is poor in Aotearoa,
             where hardship pools by postcode and ethnicity, how housing
-            multiplies it, and the eight evidence-led levers that would move it.
-            Eleven sections, every figure sourced.
+            multiplies it, and the eight evidence-led levers that would move it
+            — plus the real, sourced gains that prove the levers work. Twelve
+            sections, every figure sourced.
           </p>
           <Button asChild variant="default">
             <Link href="/report">Read the full report →</Link>

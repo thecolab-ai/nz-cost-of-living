@@ -17,6 +17,7 @@ const EXPECTED_IDS = [
   "compounding",
   "whatworks",
   "recommendations",
+  "whatsworking",
   "confidence",
 ];
 
@@ -26,7 +27,7 @@ describe("report-content", () => {
     expect(REPORT_GENERATED).toBe("5 June 2026");
   });
 
-  it("has all 11 section ids in the expected order", () => {
+  it("has all 12 section ids in the expected order", () => {
     expect(REPORT_SECTIONS.map((s) => s.id)).toEqual(EXPECTED_IDS);
   });
 

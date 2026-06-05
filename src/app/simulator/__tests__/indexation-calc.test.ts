@@ -18,6 +18,9 @@ const single = archetype("single-jobseeker");
 const soleParent = archetype("sole-parent-3kids");
 const coupleJobseeker = archetype("couple-jobseeker-2kids");
 const minwageCouple = archetype("minwage-couple-2kids");
+const singleMinwage = archetype("single-minwage");
+const single100k = archetype("single-100k");
+const workingCouple = archetype("working-couple-2kids");
 
 const zero: LeverSettings = {
   wageIndexPct: 0,
@@ -142,4 +145,64 @@ describe("calcImpact — levers combine additively", () => {
     expect(r.newWeekly).toBe(473.14);
     expect(r.crossedFloor).toBe(true);
   });
+});
+
+describe("calcImpact — benefit levers are no-ops for employed (non-beneficiary) archetypes", () => {
+  const maxLevers: LeverSettings = {
+    wageIndexPct: 15,
+    iwtcExtended: true,
+    weagLiftPct: 47,
+  };
+
+  it("single-100k: max levers leave income unchanged", () => {
+    const r = calcImpact(single100k, maxLevers);
+    expect(single100k.isBeneficiary).toBe(false);
+    expect(r.components.wageIndexAdd).toBe(0);
+    expect(r.components.weagAdd).toBe(0);
+    expect(r.components.iwtcAdd).toBe(0);
+    expect(r.newWeekly).toBe(single100k.currentNetWeekly);
+    expect(r.newWeekly).toBe(1449.47);
+    expect(r.delta).toBe(0);
+  });
+
+  it("single full-time minimum wage: max levers leave income unchanged", () => {
+    const r = calcImpact(singleMinwage, maxLevers);
+    expect(r.newWeekly).toBe(singleMinwage.currentNetWeekly);
+    expect(r.delta).toBe(0);
+    expect(r.components.wageIndexAdd).toBe(0);
+    expect(r.components.weagAdd).toBe(0);
+  });
+
+  it("working couple with 2 kids: IWTC does NOT pay out (working parent) and benefit levers are no-ops", () => {
+    const r = calcImpact(workingCouple, maxLevers);
+    expect(r.components.iwtcAdd).toBe(0);
+    expect(r.components.wageIndexAdd).toBe(0);
+    expect(r.components.weagAdd).toBe(0);
+    expect(r.newWeekly).toBe(workingCouple.currentNetWeekly);
+    expect(r.delta).toBe(0);
+  });
+
+  it("minimum-wage couple (already working) is non-beneficiary: benefit levers are no-ops", () => {
+    expect(minwageCouple.isBeneficiary).toBe(false);
+    const r = calcImpact(minwageCouple, maxLevers);
+    expect(r.components.wageIndexAdd).toBe(0);
+    expect(r.components.weagAdd).toBe(0);
+    expect(r.components.iwtcAdd).toBe(0);
+    expect(r.newWeekly).toBe(minwageCouple.currentNetWeekly);
+    expect(r.delta).toBe(0);
+  });
+});
+
+describe("calcImpact — employed archetypes sit above their basic-needs floor", () => {
+  for (const a of [singleMinwage, single100k, workingCouple]) {
+    it(`${a.id}: income above floor (negative gap)`, () => {
+      const r = calcImpact(a, DEFAULT_SETTINGS);
+      expect(a.isBeneficiary).toBe(false);
+      expect(r.crossedFloor).toBe(true);
+      expect(r.baseGap).toBeLessThan(0);
+      expect(r.newGap).toBeLessThan(0);
+      // archetype shortfall field encodes the (negative) gap directly
+      expect(r.baseGap).toBe(a.weeklyShortfallVsFloor);
+    });
+  }
 });

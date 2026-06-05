@@ -7,6 +7,7 @@ import {
   HORIZON_YEARS,
   WAGE_GROWTH,
   incomeGrowthRate,
+  incomeGrowthRateFor,
   projectGap,
 } from "@/lib/floor-projection";
 import { calcImpact, round2 } from "@/lib/indexation-calc";
@@ -25,6 +26,8 @@ function archetype(id: string) {
 const single = archetype("single-jobseeker");
 const soleParent = archetype("sole-parent-3kids");
 const minwageCouple = archetype("minwage-couple-2kids");
+const single100k = archetype("single-100k");
+const singleMinwage = archetype("single-minwage");
 
 const zero: LeverSettings = {
   wageIndexPct: 0,
@@ -100,6 +103,54 @@ describe("incomeGrowthRate", () => {
     expect(incomeGrowthRate({ ...zero, wageIndexPct: Number.NaN })).toBe(
       CPI_GROWTH,
     );
+  });
+});
+
+describe("incomeGrowthRateFor — employed vs beneficiary", () => {
+  it("beneficiary tracks the lever-driven CPI→wage interpolation", () => {
+    expect(incomeGrowthRateFor(single, zero)).toBe(incomeGrowthRate(zero));
+    expect(
+      incomeGrowthRateFor(single, { ...zero, wageIndexPct: WAGE_INDEX_MAX_PCT }),
+    ).toBeCloseTo(WAGE_GROWTH, 10);
+  });
+
+  it("employed always tracks WAGE_GROWTH, regardless of the wage-index lever", () => {
+    expect(incomeGrowthRateFor(single100k, zero)).toBe(WAGE_GROWTH);
+    expect(
+      incomeGrowthRateFor(single100k, {
+        ...zero,
+        wageIndexPct: WAGE_INDEX_MAX_PCT,
+      }),
+    ).toBe(WAGE_GROWTH);
+    expect(incomeGrowthRateFor(singleMinwage, { ...zero, wageIndexPct: 7 })).toBe(
+      WAGE_GROWTH,
+    );
+  });
+});
+
+describe("projectGap — employed archetypes", () => {
+  it("single-100k starts above the floor and the wage-index lever does not change its income path", () => {
+    const a = projectGap(single100k, zero);
+    const b = projectGap(single100k, {
+      ...zero,
+      wageIndexPct: WAGE_INDEX_MAX_PCT,
+    });
+    expect(a[0].crossed).toBe(true);
+    expect(a[0].gap).toBeLessThan(0); // above the floor
+    // benefit lever is a no-op for a wage earner -> identical income series
+    expect(a.map((p) => p.income)).toEqual(b.map((p) => p.income));
+    // income grows at WAGE_GROWTH from the unchanged year-0 anchor
+    expect(a[1].income).toBe(
+      round2(single100k.currentNetWeekly * (1 + WAGE_GROWTH)),
+    );
+    // huge surplus: stays above the floor across the whole horizon
+    expect(a[a.length - 1].crossed).toBe(true);
+  });
+
+  it("single full-time minimum wage starts above the floor", () => {
+    const p = projectGap(singleMinwage, zero);
+    expect(p[0].crossed).toBe(true);
+    expect(p[0].income).toBe(singleMinwage.currentNetWeekly);
   });
 });
 

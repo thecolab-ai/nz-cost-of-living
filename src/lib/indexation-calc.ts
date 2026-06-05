@@ -74,6 +74,14 @@ export interface ImpactResult {
  * so each slider's dollar effect is independent and legible. This is the
  * transparent, defensible choice for a policy demo, not a Treasury microsimulation.
  *
+ * ACCURACY-CRITICAL: the wage-index and WEAG levers are BENEFIT-policy levers.
+ * They apply ONLY when archetype.isBeneficiary === true. For non-beneficiary
+ * (wage/salary) archetypes they contribute $0 — a wage earner's income does not
+ * change because benefit-uprating policy changes, and modelling otherwise would
+ * be a false output. So for every employed archetype (including the working
+ * minimum-wage couple) all three benefit levers are no-ops and newWeekly stays
+ * at currentNetWeekly.
+ *
  * The IWTC toggle only adds income for benefit-dependent households
  * (hasWorkingParent === false): the report's $50/wk in-work tax credit already
  * reaches working families and excludes beneficiary children, so this lever
@@ -88,11 +96,17 @@ export function calcImpact(
   const base = archetype.currentNetWeekly;
   const floor = archetype.incomeFloorWeekly;
 
+  // Benefit-policy levers (wage-index, WEAG) only move a beneficiary household's
+  // income. For wage/salary earners they are no-ops (see header note).
+  const isBeneficiary = archetype.isBeneficiary === true;
+
   // Lever 1 — restore wage-indexation (percentage uplift on base).
-  const wageIndexAdd = round2(base * (s.wageIndexPct / 100));
+  const wageIndexAdd = isBeneficiary
+    ? round2(base * (s.wageIndexPct / 100))
+    : 0;
 
   // Lever 3 — lift toward WEAG benchmark (stepped percentage uplift on base).
-  const weagAdd = round2(base * (s.weagLiftPct / 100));
+  const weagAdd = isBeneficiary ? round2(base * (s.weagLiftPct / 100)) : 0;
 
   // Lever 2 — extend IWTC/WfF to beneficiary children (per-child flat credit).
   const isBeneficiaryHousehold = archetype.hasWorkingParent === false;

@@ -791,6 +791,82 @@ export const REPORT_SECTIONS: ReportSection[] = [
     ],
   },
   {
+    id: "whatsworking",
+    title: "What's working — and reasons for hope",
+    subhead:
+      "These are not abstractions: when Aotearoa pulled the income, food, housing and energy levers, the numbers moved — proof the dial can be shifted, even where some gains have since partly unwound.",
+    paragraphs: [
+      "After eight sections that map a hard problem, it is both fair and important to say plainly: this is not hopeless. The same official data that records the squeeze also records real, sourced gains — periods and programmes where deliberate policy moved the dial in the right direction. The point of this section is not to soften the diagnosis but to make the opposite case from the same evidence: the levers work. When New Zealand chose to lift incomes, feed children at school, warm cold homes and raise the floor under low-paid work, hardship fell — measurably, and on the country's own official measures. This is an experimental, evidence-led proof of concept, not financial or policy advice, but the bright spots below are as well-sourced as the warnings.",
+      "The clearest proof is the child-poverty fall of the framework's first years. On the after-housing-costs primary measure the Government reported 66,500 fewer children in poverty since the 2017/18 baseline, alongside 21,900 fewer children in material hardship (Beehive, drawing on Stats NZ, 24 February 2022). The official Stats NZ series tells the same story across every primary measure: before housing costs, children in low income fell from 183,400 (16.5%) in 2018 to 135,400 (11.7%) in 2022 — about 48,000 children; and on the anchored after-housing-costs line the fall was deeper still, from 253,800 (22.8%) to 168,400 (14.6%), roughly 85,000 fewer children, the largest early progress of any primary measure (Stats NZ, Child poverty statistics, year ended June 2022). These were not accidents of the cycle; they tracked the Families Package and benefit increases. The honest caveat is that several of these gains have since partly unwound — material hardship has climbed back to 14.3% (169,300 children) by 2025 and anchored after-housing-costs poverty has risen toward 17.8% — so the headline 'fewer children' figures describe the 2018-2022 window, not the latest position (Stats NZ, year ended June 2025). But that does not weaken the lesson; it sharpens it. The dial moved when the levers were pulled, and it moved back when they were released. The mechanism is proven either way.",
+      "The accountability architecture that makes any of this visible is itself a quiet success. The Child Poverty Reduction Act 2018 created nine official measures, legislated ten-year and intermediate three-year targets, and a standing duty on government to report annually — so progress and setbacks alike are now independently tracked by Stats NZ every year, most recently for the year ended June 2025. Before 2018, a fall (or a rise) of tens of thousands of children could pass without an agreed, published number to argue over. Now it cannot. Transparency is not the same as progress, but it is the precondition for it — and New Zealand has built it.",
+      "Alongside income, the in-kind and structural levers have delivered real, sourced wellbeing gains. Ka Ora, Ka Ako, the Healthy School Lunches programme, reached more than 236,000 learners — over 27% of all school students — across about 1,013 schools by May 2024, providing a free lunch every school day in higher-need schools (Ministry of Education / Ka Ora, Ka Ako, 2024). Its evaluation found students who previously had insufficient food reported feeling on average about 20% fuller after lunch, with mental-health improvements of roughly 9-20% for children from food-insecure homes (Ministry of Education evaluation, 2024-2025). On housing quality, Warmer Kiwi Homes has delivered over 170,000 insulation and heating retrofits since it began, with grants now covering up to 90% of the cost for the households in greatest need (EECA, 5 August 2025); at the 100,000-retrofit milestone EECA reported recipients cut winter electricity use by 16% and the programme saved an estimated $15 million a year in avoided health costs (EECA, 8 December 2022). And from 1 July 2025, all residential rentals must meet the legally enforceable Healthy Homes Standards for heating, insulation, ventilation, moisture and draught-stopping — raising the baseline quality of the entire rental stock that lower-income families disproportionately rely on (Tenancy Services, MBIE, 1 July 2025).",
+      "Finally, the floor under low-paid work and the public-health story both point the right way. The adult minimum wage rose from $16.50/hour in April 2018 to $23.50/hour by April 2025 — a roughly 42% nominal increase that lifts the lowest-paid directly (Employment New Zealand, MBIE). Community Connect, the 50% public-transport discount for Community Services Card holders, was retained nationwide, giving lower-income New Zealanders permanently cheaper bus, train and ferry fares (Ministry of Transport) — though the honest caveat is that the broader age-based free and half-price fares introduced in 2023 were defunded and ended around May 2024, so only the Community Services Card discount and some council schemes continue (RNZ/1News, March 2024). On health, youth daily smoking has collapsed to a record low of about 1.1% of Year 10 students — around 700 students nationally — and regular youth vaping has begun falling for the first time in seven years, from 18.2% in 2022 to 16.4% in 2023 (ASH New Zealand, 2023-2024). Read together, the message is not that the problem is solved — it plainly is not — but that it is solvable. Every recommendation in the previous section is a lever that has, somewhere in this record, already been shown to work.",
+    ],
+    stats: [
+      {
+        value: "66,500",
+        label:
+          "fewer children in poverty on the after-housing-costs primary measure since the 2017/18 baseline; also 21,900 fewer in material hardship (2018-2021)",
+        calculation:
+          "Government (Beehive) report drawing on Stats NZ child poverty statistics: 66,500 fewer children on the AHC primary measure since the 2017/18 baseline; 21,900 fewer in material hardship",
+        source:
+          "NZ Government (Beehive), drawing on Stats NZ child poverty statistics, 24 February 2022: https://www.beehive.govt.nz/release/government-lifts-66500-children-out-poverty",
+      },
+      {
+        value: "253,800 → 168,400",
+        label:
+          "children in anchored after-housing-costs poverty fell from 22.8% (2018) to 14.6% (2022) — about 85,000 fewer, the deepest early progress of any primary measure",
+        calculation:
+          "Child Poverty Reduction Act measure MEASB (AHC<50%, anchored line): 22.8%/253,800 (2018) to 14.6%/168,400 (2022); fall of ~85,400 children",
+        source:
+          "Stats NZ, Child poverty statistics year ended June 2022 (MEASB, data series 2018-2022): https://www.stats.govt.nz/information-releases/child-poverty-statistics-year-ended-june-2022/",
+      },
+      {
+        value: "236,000+",
+        label:
+          "learners (over 27% of all school students) at ~1,013 schools getting a free Ka Ora, Ka Ako lunch every school day by May 2024; ~20% greater fullness for previously food-insecure students",
+        calculation:
+          "Ka Ora, Ka Ako reach as at May 2024: 236,000+ learners (~27% of students), ~1,013 schools; evaluation found ~20% greater fullness for previously food-insecure students and 9-20% mental-health gains for children in food-insecure homes",
+        source:
+          "NZ Ministry of Education / Ka Ora, Ka Ako (2024, https://kaorakaako.education.govt.nz/); evaluation 2024-2025 (https://link.springer.com/article/10.1186/s12889-025-24529-8)",
+      },
+      {
+        value: "170,000+",
+        label:
+          "Warmer Kiwi Homes insulation and heating retrofits delivered (grants up to 90% of cost); at 100,000 retrofits, 16% lower winter electricity use and ~$15m/yr avoided health costs",
+        calculation:
+          "EECA: 170,000+ retrofits since the programme began, grants up to 90% of cost (5 August 2025); at the 100,000-retrofit milestone, 16% lower winter electricity use and ~$15m/yr avoided health costs (8 December 2022)",
+        source:
+          "Energy Efficiency and Conservation Authority (EECA): https://www.eeca.govt.nz/about/news-and-corporate/news/more-households-to-benefit-from-warmer-kiwi-homes-upgrades/ (5 August 2025); https://www.eeca.govt.nz/about/news-and-events/news/new-zealand-homes-warmer-and-healthier-with-100-thousand-retrofits/ (8 December 2022)",
+      },
+      {
+        value: "$16.50 → $23.50",
+        label:
+          "adult minimum wage per hour, April 2018 to April 2025 — a roughly 42% nominal increase lifting the lowest-paid directly",
+        calculation:
+          "Statutory adult minimum wage: $16.50/hr (1 April 2018) to $23.50/hr (1 April 2025); (23.50 − 16.50) / 16.50 ≈ 42.4% nominal increase",
+        source:
+          "Employment New Zealand (MBIE), effective 1 April 2025: https://www.employment.govt.nz/pay-and-hours/pay-and-wages/minimum-wage/previous-min-wage-rates",
+      },
+    ],
+    pullquote:
+      "The dial moved when the levers were pulled, and it moved back when they were released. The mechanism is proven either way — these gains are the evidence that the problem is solvable.",
+    sources: [
+      "NZ Government (Beehive), drawing on Stats NZ child poverty statistics, 24 February 2022 — 66,500 fewer children on the AHC primary measure since the 2017/18 baseline; 21,900 fewer in material hardship: https://www.beehive.govt.nz/release/government-lifts-66500-children-out-poverty",
+      "Stats NZ, Child poverty statistics year ended June 2022 (data series 2018-2022): MEASA BHC<50% (moving line) 16.5%/183,400 (2018) → 11.7%/135,400 (2022), ~48,000 fewer; MEASB AHC<50% (anchored line) 22.8%/253,800 (2018) → 14.6%/168,400 (2022), ~85,000 fewer: https://www.stats.govt.nz/information-releases/child-poverty-statistics-year-ended-june-2022/",
+      "Stats NZ, Child poverty statistics year ended June 2025 — Child Poverty Reduction Act 2018 framework: 9 official measures, legislated 10-year and intermediate 3-year targets, annual independent reporting; also records the partial unwinding (material hardship 14.3%/169,300; anchored AHC toward 17.8%): https://www.stats.govt.nz/information-releases/child-poverty-statistics-year-ended-june-2025/",
+      "NZ Ministry of Education / Ka Ora, Ka Ako (reach as at May 2024) — 236,000+ learners (over 27% of students) at ~1,013 schools, a free lunch every school day: https://kaorakaako.education.govt.nz/",
+      "NZ Ministry of Education evaluation, 2024-2025 (via Ministry briefing notes and peer-reviewed analysis) — ~20% greater fullness for previously food-insecure students; 9-20% mental-health gains for children in food-insecure homes: https://link.springer.com/article/10.1186/s12889-025-24529-8",
+      "Energy Efficiency and Conservation Authority (EECA), 5 August 2025 — 170,000+ insulation and heating retrofits; grants up to 90% of cost for households in greatest need: https://www.eeca.govt.nz/about/news-and-corporate/news/more-households-to-benefit-from-warmer-kiwi-homes-upgrades/",
+      "Energy Efficiency and Conservation Authority (EECA), 8 December 2022 — at 100,000 retrofits, 16% lower winter electricity use and ~$15m/yr avoided health costs: https://www.eeca.govt.nz/about/news-and-events/news/new-zealand-homes-warmer-and-healthier-with-100-thousand-retrofits/",
+      "Tenancy Services, NZ Ministry of Business, Innovation & Employment — from 1 July 2025 all residential rentals must meet the Healthy Homes Standards (heating, insulation, ventilation, moisture/drainage, draught-stopping): https://www.tenancy.govt.nz/healthy-homes/",
+      "NZ Ministry of Transport — Community Connect 50% public-transport discount for Community Services Card holders, retained nationwide (introduced 2022): https://www.transport.govt.nz/area-of-interest/public-transport/community-connect. Caveat: the 2023 age-based free/half-price fares (free under-13s, half-price under-25s) were defunded and ended around May 2024 — RNZ/1News, March 2024: https://www.rnz.co.nz/news/national/515503/public-transport-subsidies-are-ending-here-s-how-much-fares-will-rise",
+      "ASH New Zealand (Action for Smokefree 2025), 2023-2024 ASH Year 10 Snapshot Survey — ~1.1% Year 10 daily smoking (record low, ~700 students); regular vaping falling from 18.2% (2022) to 16.4% (2023): https://www.ash.org.nz/youth_daily_smoking_rates_remain_at_record_low_in_annual_ash_year_10_survey_regular_vaping_decreases_for_the_first_time_in_7_years",
+      "Employment New Zealand (MBIE) — adult minimum wage $16.50/hr (1 April 2018) to $23.50/hr (1 April 2025), ~42% nominal increase: https://www.employment.govt.nz/pay-and-hours/pay-and-wages/minimum-wage/previous-min-wage-rates",
+      "Caveat (Stats NZ, year ended June 2025): several 2018-2022 gains have since partly unwound — material hardship climbed from 10.6% (2022) to 14.3% (169,300 children) by 2025, and anchored AHC poverty rose back toward 17.8%; Stats NZ estimates carry sampling error and confidence intervals, and the 2025 transition to the Household Income and Living Survey changed some hardship/disability questions so they are not fully comparable to earlier years: https://www.stats.govt.nz/information-releases/child-poverty-statistics-year-ended-june-2025/",
+    ],
+  },
+  {
     id: "confidence",
     title: "Confidence, limitations & sources",
     subhead:

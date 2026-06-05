@@ -2,12 +2,24 @@
 // All dollar anchors and shortfalls are embedded exactly from the build's DATA SPEC.
 // Sources: MSD benefit rate tables (1 April 2026), CPAG "Below the Income Floor" (2025),
 // WEAG (2019). Income-floor figures are CPAG-derived estimates (see DISCLAIMER).
+//
+// Employed (non-beneficiary) archetypes — net-income derivation:
+// Net = gross − PAYE (IRD 2026/27 brackets) − ACC earners' levy 1.75% (cap $156,641);
+// excludes KiwiSaver, Working for Families and student loan.
+// IRD 2026/27 PAYE brackets: 10.5% to $15,600; 17.5% to $53,500; 30% to $78,100;
+// 33% to $180,000; 39% above $180,000.
+// Source: IRD tax-rates (1 Apr 2025+), ACC earners' levy 2026/27.
+// Net figures below for employed archetypes are after PAYE+ACC only.
 
 export type BenefitArchetypeId =
   | "single-jobseeker"
   | "sole-parent-3kids"
   | "couple-jobseeker-2kids"
-  | "minwage-couple-2kids";
+  | "minwage-couple-2kids"
+  | "single-minwage"
+  | "single-60k"
+  | "single-100k"
+  | "working-couple-2kids";
 
 export interface Archetype {
   id: BenefitArchetypeId;
@@ -16,6 +28,13 @@ export interface Archetype {
   children: number;
   /** true = at least one parent in paid work (already receiving the in-work credit). */
   hasWorkingParent: boolean;
+  /**
+   * true = income derives from a main benefit; the benefit-policy levers
+   * (wage-indexation, WEAG lift) act on it. false = wage/salary earner; the
+   * benefit levers are no-ops (changing a wage-earner's income would be a
+   * false output). IWTC gating is separate and keyed on hasWorkingParent.
+   */
+  isBeneficiary: boolean;
   benefitType: string;
   housing: string;
   /** Data-grounded net/base weekly figure the levers act on. */
@@ -57,6 +76,7 @@ export const ARCHETYPES: Archetype[] = [
       "Single working-age adult, no children, on a main benefit (Jobseeker Support or Supported Living Payment).",
     children: 0,
     hasWorkingParent: false,
+    isBeneficiary: true,
     benefitType: "Jobseeker Support (single, 25+) / SLP",
     housing:
       "Single rental (often shared or boarding); Accommodation Supplement assumed",
@@ -73,6 +93,7 @@ export const ARCHETYPES: Archetype[] = [
       "Single parent of three children renting privately, on Sole Parent Support plus Working for Families and Accommodation Supplement.",
     children: 3,
     hasWorkingParent: false,
+    isBeneficiary: true,
     benefitType:
       "Sole Parent Support + Family Tax Credit + Accommodation Supplement",
     housing: "Private rental (high housing-cost exposure)",
@@ -89,6 +110,7 @@ export const ARCHETYPES: Archetype[] = [
       "Two-parent household, both on a main benefit (couple Jobseeker rate), with two dependent children.",
     children: 2,
     hasWorkingParent: false,
+    isBeneficiary: true,
     benefitType:
       "Jobseeker Support (couple) + Family Tax Credit + Accommodation Supplement",
     housing: "Rental, family-sized; Accommodation Supplement assumed",
@@ -105,6 +127,7 @@ export const ARCHETYPES: Archetype[] = [
       "Working two-parent household with two children; one earner on the adult minimum wage working 40 hours, topped up by Working for Families / in-work tax credit.",
     children: 2,
     hasWorkingParent: true,
+    isBeneficiary: false,
     benefitType:
       "Wages + Working for Families (Family Tax Credit + In-Work Tax Credit) + Accommodation Supplement",
     housing: "Private rental",
@@ -113,6 +136,70 @@ export const ARCHETYPES: Archetype[] = [
     incomeFloorWeekly: 930,
     baseBenefitNote:
       "Estimated. One earner at the real adult minimum wage of $23.95/hr from 1 April 2026 x 40 hrs = $958 gross/wk; after PAYE/ACC and Working for Families top-ups gives an inferred figure near $880/wk. CPAG finds a minimum-wage couple with 2 children in deficit even at 40 hours; modelled here as about $50/wk short. Demonstrates in-work poverty: about 60% of poor children have a working parent.",
+  },
+  {
+    id: "single-minwage",
+    name: "Single adult, full-time minimum wage",
+    description:
+      "Single working-age adult, no children, working 40 hours a week on the adult minimum wage. Income is wages, not a benefit, so the benefit-policy levers do not change it.",
+    children: 0,
+    hasWorkingParent: true,
+    isBeneficiary: false,
+    benefitType: "Wages — minimum wage 40 hrs ($23.95/hr, $49,816/yr)",
+    housing: "Private rental (1 adult)",
+    currentNetWeekly: 794.59,
+    weeklyShortfallVsFloor: -322.04,
+    incomeFloorWeekly: 472.55,
+    baseBenefitNote:
+      "Wage earner: $23.95/hr x 40 hrs x 52 = $49,816 gross/yr. Net = gross − PAYE (IRD 2026/27 brackets) − ACC earners' levy 1.75% (cap $156,641) = $794.59/wk; excludes KiwiSaver, Working for Families and student loan. Sits about $322/wk ABOVE the basic-needs floor (a surplus). The benefit-policy levers do not apply to a wage earner.",
+  },
+  {
+    id: "single-60k",
+    name: "Single adult earning $60,000",
+    description:
+      "Single adult, no children, on a $60,000 salary. Income is wages, not a benefit, so the benefit-policy levers do not change it.",
+    children: 0,
+    hasWorkingParent: true,
+    isBeneficiary: false,
+    benefitType: "Wages/salary — $60,000/yr",
+    housing: "Private rental (1 adult)",
+    currentNetWeekly: 937.11,
+    weeklyShortfallVsFloor: -464.56,
+    incomeFloorWeekly: 472.55,
+    baseBenefitNote:
+      "Wage/salary earner: $60,000 gross/yr. Net = gross − PAYE (IRD 2026/27 brackets) − ACC earners' levy 1.75% (cap $156,641) = $937.11/wk; excludes KiwiSaver, Working for Families and student loan. Sits about $465/wk ABOVE the basic-needs floor (a surplus). The benefit-policy levers do not apply to a wage earner.",
+  },
+  {
+    id: "single-100k",
+    name: "Single adult earning $100,000",
+    description:
+      "Single adult, no children, on a $100,000 salary. Income is wages, not a benefit, so the benefit-policy levers do not change it.",
+    children: 0,
+    hasWorkingParent: true,
+    isBeneficiary: false,
+    benefitType: "Wages/salary — $100,000/yr",
+    housing: "Private rental or mortgage (1 adult)",
+    currentNetWeekly: 1449.47,
+    weeklyShortfallVsFloor: -976.92,
+    incomeFloorWeekly: 472.55,
+    baseBenefitNote:
+      "Wage/salary earner: $100,000 gross/yr. Net = gross − PAYE (IRD 2026/27 brackets) − ACC earners' levy 1.75% (cap $156,641) = $1,449.47/wk; excludes KiwiSaver, Working for Families and student loan. Sits about $977/wk ABOVE the basic-needs floor (a surplus). The benefit-policy levers do not apply to a wage earner.",
+  },
+  {
+    id: "working-couple-2kids",
+    name: "Working couple, two incomes, 2 children",
+    description:
+      "Two-parent household with two children and two earners on $60,000 each. Income is wages, not a benefit, so the benefit-policy levers do not change it.",
+    children: 2,
+    hasWorkingParent: true,
+    isBeneficiary: false,
+    benefitType: "Wages/salary — two earners on $60,000 each",
+    housing: "Private rental or mortgage (family)",
+    currentNetWeekly: 1874.21,
+    weeklyShortfallVsFloor: -934.21,
+    incomeFloorWeekly: 940,
+    baseBenefitNote:
+      "Two wage/salary earners on $60,000 each. Each net = gross − PAYE (IRD 2026/27 brackets) − ACC earners' levy 1.75% (cap $156,641) = $937.11/wk; combined $1,874.21/wk; excludes KiwiSaver, Working for Families and student loan. Sits about $934/wk ABOVE the family basic-needs floor (a surplus). The benefit-policy levers do not apply to wage earners.",
   },
 ];
 

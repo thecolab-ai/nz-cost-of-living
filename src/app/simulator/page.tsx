@@ -45,7 +45,7 @@ import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import {
   COST_GROWTH,
-  incomeGrowthRate,
+  incomeGrowthRateFor,
   projectGap,
 } from "@/lib/floor-projection";
 import { DEFAULT_SETTINGS, calcImpact } from "@/lib/indexation-calc";
@@ -133,8 +133,11 @@ export default function SimulatorPage() {
   const lastPoint = projection[projection.length - 1];
   const gapGrew = round2Local(lastPoint.gap - firstPoint.gap);
   const startsAboveFloor = firstPoint.crossed;
+  const isEmployed = archetype.isBeneficiary === false;
   const wageRestored = settings.wageIndexPct > 0;
-  const incomeRatePct = (incomeGrowthRate(settings) * 100).toFixed(1);
+  const incomeRatePct = (
+    incomeGrowthRateFor(archetype, settings) * 100
+  ).toFixed(1);
   const costGrowthPct = (COST_GROWTH * 100).toFixed(1);
   const niceDriftMax =
     Math.ceil(
@@ -145,14 +148,18 @@ export default function SimulatorPage() {
   const METHODS: MethodEntry[] = [
     {
       label: "Current weekly income",
-      calculation:
-        "The household's data-grounded net/base weekly figure (archetype.currentNetWeekly) that the levers act on — e.g. $372.55/wk for the single Jobseeker. Base benefit only; excludes Working for Families and the Accommodation Supplement, so it understates true disposable income.",
-      source: SOURCE_LINE,
+      calculation: isEmployed
+        ? "This household is on wages/salary, not a benefit. The weekly figure (archetype.currentNetWeekly) is net pay = gross − PAYE (IRD 2026/27 brackets: 10.5% to $15,600; 17.5% to $53,500; 30% to $78,100; 33% to $180,000; 39% above) − ACC earners' levy 1.75% (cap $156,641). Excludes KiwiSaver, Working for Families and student loan."
+        : "The household's data-grounded net/base weekly figure (archetype.currentNetWeekly) that the levers act on — e.g. $372.55/wk for the single Jobseeker. Base benefit only; excludes Working for Families and the Accommodation Supplement, so it understates true disposable income.",
+      source: isEmployed
+        ? "Source: IRD tax-rates (1 Apr 2025+), ACC earners' levy 2026/27."
+        : SOURCE_LINE,
     },
     {
       label: "After your settings",
-      calculation:
-        "base + additive lever effects: wage-index uplift (base × wageIndexPct%) + WEAG uplift (base × weagLiftPct%, stepped 0/12/25/47%) + IWTC ($50/wk × children, beneficiary households only). Levers are applied additively on the same base, not compounded.",
+      calculation: isEmployed
+        ? "Unchanged from current income. The wage-index, WEAG and IWTC levers are benefit-policy settings — this household is on wages, so they do not change its income."
+        : "base + additive lever effects: wage-index uplift (base × wageIndexPct%) + WEAG uplift (base × weagLiftPct%, stepped 0/12/25/47%) + IWTC ($50/wk × children, beneficiary households only). Levers are applied additively on the same base, not compounded.",
       source: SOURCE_LINE,
     },
     {
@@ -237,6 +244,14 @@ export default function SimulatorPage() {
             </div>
 
             <Separator />
+
+            {isEmployed && (
+              <p className="rounded-md border border-brand-orange/20 bg-brand-orange/5 px-3 py-2 text-brand-slate-dark text-xs">
+                These levers adjust benefit settings — this household is on
+                wages, so they don't change its income. The snapshot below still
+                shows its income against the basic-needs floor.
+              </p>
+            )}
 
             {/* Lever 1 — wage indexation */}
             <div className="space-y-2">
@@ -512,6 +527,19 @@ export default function SimulatorPage() {
                   — {gapClause}. Based on MSD benefit rates (April 2026), WEAG
                   (2019) and CPAG's 'Below the Income Floor' (2025).
                 </>
+              ) : impact.crossedFloor ? (
+                <>
+                  <span className="font-medium text-brand-slate-dark">
+                    {isEmployed
+                      ? "This household is on wages, not a benefit."
+                      : "Move a lever to see the change."}
+                  </span>{" "}
+                  It sits ${fmt2(Math.abs(impact.baseGap))}/wk above the $
+                  {fmt0(floor)} basic-needs floor — a weekly surplus.
+                  {isEmployed
+                    ? " The benefit-policy levers don't change a wage-earner's income."
+                    : ""}
+                </>
               ) : (
                 <>
                   <span className="font-medium text-brand-slate-dark">
@@ -657,14 +685,31 @@ export default function SimulatorPage() {
             </span>{" "}
             {startsAboveFloor && !lastPoint.crossed ? (
               <>
-                with these settings the household starts above the floor, but
-                cost growth (~{costGrowthPct}%/yr) outpaces income growth — so
-                by {lastYear} the line dips back to{" "}
+                {isEmployed
+                  ? "this wage-earning household"
+                  : "with these settings the household"}{" "}
+                starts above the floor, but cost growth (~{costGrowthPct}%/yr)
+                outpaces {isEmployed ? "wage" : "income"} growth (~
+                {incomeRatePct}
+                %/yr) — so by {lastYear} the line dips back to{" "}
                 <span className="font-mono tabular-nums">
                   ${fmt2(lastPoint.gap)}
                 </span>
                 /wk short. Without ongoing intervention, even a household above
                 the floor today drifts below it.
+              </>
+            ) : isEmployed ? (
+              <>
+                this household earns wages, so its income tracks wage growth (~
+                <span className="font-mono tabular-nums">{incomeRatePct}</span>
+                %/yr) rather than benefit indexation, and the benefit levers
+                leave it unchanged. It starts ${fmt2(Math.abs(firstPoint.gap))}
+                /wk above the floor; by {lastYear} the surplus is{" "}
+                <span className="font-mono tabular-nums">
+                  ${fmt2(Math.abs(lastPoint.gap))}
+                </span>
+                /wk as the floor rises ~{costGrowthPct}%/yr — the cushion
+                narrows but the household stays above the line.
               </>
             ) : wageRestored ? (
               <>
@@ -700,13 +745,14 @@ export default function SimulatorPage() {
           </p>
 
           <p className="text-brand-slate-muted text-xs">
-            Year 0 is your current settings. Income grows at the indexation rate
-            you've chosen (CPI 3.1%/yr at +0%, rising toward wage growth 4.8%/yr
-            at the +15% max); the basic-needs floor grows at ~6.2%/yr, the
-            faster basket of costs beneficiary households actually face. The
-            orange band is the widening weekly shortfall. Projection is
-            illustrative — simple year-on-year growth from your current-year
-            anchors, not a compounding microsimulation.
+            Year 0 is your current settings.{" "}
+            {isEmployed
+              ? "This household is on wages, so income grows at wage growth (~4.8%/yr) and the benefit levers don't change it"
+              : "Income grows at the indexation rate you've chosen (CPI 3.1%/yr at +0%, rising toward wage growth 4.8%/yr at the +15% max)"}
+            ; the basic-needs floor grows at ~6.2%/yr, the faster basket of
+            costs households actually face. The orange band is the weekly
+            shortfall. Projection is illustrative — simple year-on-year growth
+            from your current-year anchors, not a compounding microsimulation.
           </p>
         </CardContent>
       </Card>

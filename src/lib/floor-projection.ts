@@ -59,7 +59,8 @@ function clamp01(n: number): number {
 }
 
 /**
- * The income growth rate the household experiences, given the wage-indexation lever.
+ * The income growth rate a BENEFICIARY household experiences, given the
+ * wage-indexation lever.
  *
  * At wageIndexPct = 0 income tracks CPI (3.1%); at the +15% max it tracks wage
  * growth (4.8%), interpolated linearly in between. The floor ALWAYS grows at
@@ -69,6 +70,24 @@ function clamp01(n: number): number {
 export function incomeGrowthRate(settings: LeverSettings): number {
   const frac = clamp01((settings.wageIndexPct ?? 0) / WAGE_INDEX_MAX_PCT); // 0 at 0%, 1 at 15%
   return CPI_GROWTH + frac * (WAGE_GROWTH - CPI_GROWTH); // 3.1% .. 4.8%
+}
+
+/**
+ * The income growth rate for an ARCHETYPE, honouring whether it is a beneficiary.
+ *
+ * Wage/salary earners are not subject to benefit indexation: their income tracks
+ * WAGE_GROWTH (4.8%/yr) regardless of the wage-index lever, which is a
+ * benefit-policy lever and must not move a wage earner's trajectory. Beneficiary
+ * households use the CPI→wage interpolation above. The floor still grows at
+ * COST_GROWTH for everyone. Growth rates remain clearly-labelled estimates.
+ */
+export function incomeGrowthRateFor(
+  archetype: Archetype,
+  settings: LeverSettings,
+): number {
+  return archetype.isBeneficiary === true
+    ? incomeGrowthRate(settings)
+    : WAGE_GROWTH;
 }
 
 /**
@@ -90,7 +109,7 @@ export function projectGap(
 ): ProjectionPoint[] {
   const firstYear = opts.firstYear ?? FIRST_YEAR;
   const years = Math.max(1, Math.floor(opts.years ?? HORIZON_YEARS));
-  const incomeRate = incomeGrowthRate(settings);
+  const incomeRate = incomeGrowthRateFor(archetype, settings);
   const income0 = calcImpact(archetype, settings).newWeekly; // Year-0 income (after settings)
   const floor0 = archetype.incomeFloorWeekly; // Year-0 floor (archetype anchor)
 

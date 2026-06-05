@@ -48,6 +48,16 @@ describe("defaultBasketFor", () => {
       "nutritious-family",
     );
   });
+
+  it("keys off children for the new employed archetypes too", () => {
+    // childless employed -> bare-staples
+    expect(defaultBasketFor(archetype("single-minwage"))).toBe("bare-staples");
+    expect(defaultBasketFor(archetype("single-100k"))).toBe("bare-staples");
+    // employed family with children -> nutritious-family
+    expect(defaultBasketFor(archetype("working-couple-2kids"))).toBe(
+      "nutritious-family",
+    );
+  });
 });
 
 describe("buildBudget defaults", () => {
@@ -137,6 +147,36 @@ describe("buildBudget wage-index lever", () => {
     expect(b.incomeWeekly).toBeGreaterThan(b.incomeBase);
     expect(b.incomeUplift).toBe(round2(b.incomeWeekly - b.incomeBase));
     expect(b.incomeUplift).toBe(round2(a.currentNetWeekly * 0.15));
+  });
+});
+
+describe("buildBudget wage-index lever — no-op for employed archetypes", () => {
+  it("does not lift a wage-earner's income even at +15% (benefit lever)", () => {
+    const a = archetype("single-100k");
+    expect(a.isBeneficiary).toBe(false);
+    const b = buildBudget({
+      archetypeId: "single-100k",
+      centreName: "Auckland",
+      basketKey: "bare-staples",
+      wageIndexPct: 15,
+    });
+    expect(b.incomeWeekly).toBe(round2(a.currentNetWeekly));
+    expect(b.incomeUplift).toBe(0);
+  });
+});
+
+describe("buildBudget — new employed archetypes run a large surplus", () => {
+  it("single-100k in Auckland clears outgoings with room to spare", () => {
+    const b = buildBudget({
+      archetypeId: "single-100k",
+      centreName: "Auckland",
+      basketKey: "bare-staples",
+    });
+    expect(b.residualIsDeficit).toBe(false);
+    expect(b.residual).toBeGreaterThan(0);
+    expect(b.incomeWeekly).toBe(
+      round2(archetype("single-100k").currentNetWeekly),
+    );
   });
 });
 
