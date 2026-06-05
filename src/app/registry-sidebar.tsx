@@ -1,6 +1,19 @@
 "use client";
 
-import { Home } from "lucide-react";
+import {
+  Building2,
+  FileText,
+  Hammer,
+  HeartHandshake,
+  Home,
+  Info,
+  LineChart,
+  MapPin,
+  ShoppingBasket,
+  SlidersHorizontal,
+  Wallet,
+  Zap,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -8,11 +21,59 @@ import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+
+const NAV_MAIN = [{ href: "/", label: "Home", icon: Home }];
+
+// Grouped navigation — categorised by what each tool measures, ending with the
+// "why / how" methodology pages.
+const NAV_GROUPS: {
+  label: string;
+  items: { href: string; label: string; icon: typeof Home }[];
+}[] = [
+  {
+    label: "Income & budget",
+    items: [
+      { href: "/budget", label: "Budget Builder", icon: Wallet },
+      {
+        href: "/simulator",
+        label: "Indexation Simulator",
+        icon: SlidersHorizontal,
+      },
+    ],
+  },
+  {
+    label: "Cost of living",
+    items: [
+      { href: "/grocery", label: "Grocery Tracker", icon: LineChart },
+      { href: "/basket", label: "Basket Tracker", icon: ShoppingBasket },
+      { href: "/energy", label: "Energy & Power", icon: Zap },
+      { href: "/housing", label: "Housing & Rent", icon: Building2 },
+    ],
+  },
+  {
+    label: "Where it lands",
+    items: [{ href: "/map", label: "Deprivation Map", icon: MapPin }],
+  },
+  {
+    label: "About & methodology",
+    items: [
+      { href: "/brief", label: "State of Play brief", icon: FileText },
+      { href: "/why", label: 'Why "for good"', icon: HeartHandshake },
+      { href: "/how-its-built", label: "How it's built", icon: Hammer },
+      { href: "/about", label: "About & sources", icon: Info },
+    ],
+  },
+];
+
+function isActivePath(pathname: string, href: string): boolean {
+  return href === "/" ? pathname === "/" : pathname.startsWith(href);
+}
 
 function LogoMark() {
   return (
@@ -81,16 +142,42 @@ export function RegistrySidebar() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild isActive={pathname === "/"}>
-                <Link href="/">
-                  <Home className="size-4" />
-                  <span>Home</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
+            {NAV_MAIN.map((item) => (
+              <SidebarMenuItem key={item.href}>
+                <SidebarMenuButton
+                  asChild
+                  isActive={isActivePath(pathname, item.href)}
+                >
+                  <Link href={item.href}>
+                    <item.icon className="size-4" />
+                    <span>{item.label}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
           </SidebarMenu>
         </SidebarGroup>
+
+        {NAV_GROUPS.map((group) => (
+          <SidebarGroup key={group.label}>
+            <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
+            <SidebarMenu>
+              {group.items.map((item) => (
+                <SidebarMenuItem key={item.href}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={isActivePath(pathname, item.href)}
+                  >
+                    <Link href={item.href}>
+                      <item.icon className="size-4" />
+                      <span>{item.label}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroup>
+        ))}
       </SidebarContent>
     </Sidebar>
   );

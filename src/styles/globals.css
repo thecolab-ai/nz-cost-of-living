@@ -475,3 +475,42 @@
 }
 
 @custom-variant dark (&:is(.dark *));
+
+@media print {
+  /* hide the app chrome — desktop sidebar wrapper + its gap, mobile sheet,
+     sidebar trigger, the Vercel toolbar, and anything marked print-hide */
+  [data-slot="sidebar"],
+  [data-slot="sidebar-gap"],
+  [data-slot="sidebar-trigger"],
+  [data-sidebar="trigger"],
+  [data-vercel-toolbar],
+  [data-print-hide] {
+    display: none !important;
+  }
+  /* white page, no app gradients/blobs, no shadows */
+  html,
+  body {
+    background: #ffffff !important;
+  }
+  .print-blob {
+    display: none !important;
+  }
+  /* let the brief own the full page */
+  [data-print-root] {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+  }
+  @page {
+    size: A4;
+    margin: 14mm;
+  }
+  /* avoid awkward breaks inside finding cards / source rows */
+  [data-print-card] {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  a[href]::after {
+    content: "";
+  }
+}
