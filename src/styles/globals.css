@@ -1,0 +1,477 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* BRAND TOKENS */
+@layer base {
+  :root {
+    /* COLORS */
+
+    /* Gray (Neutral) */
+    --ds-gray-warm-1: #f8f8fa;
+    --ds-gray-warm-2: #ebeaeb;
+    --ds-gray-warm-3: #d1d2d3;
+    --ds-gray-warm-4: #b0b0b0;
+    --ds-gray-warm-5: #969696;
+    --ds-gray-warm-6: #696969;
+    --ds-gray-warm-7: #444444;
+    --ds-gray-warm-8: #2c2c2c;
+    --ds-gray-warm-9: #1d1c1d;
+    --ds-gray-warm-10: #000000;
+
+    /* Brand Colors */
+    --ds-brand-one: #4a154b;
+    --ds-brand-one-foreground: #f8f8fa;
+    --ds-brand-two: #2eb67d;
+    --ds-brand-two-foreground: #e7ffe7;
+    --ds-brand-three: #ecb22e;
+    --ds-brand-three-foreground: #fff8d9;
+    --ds-brand-four: #e01e5a;
+    --ds-brand-four-foreground: #fff2ef;
+    --ds-brand-five: #36c5f0;
+    --ds-brand-five-foreground: #f0f8fc;
+    --ds-brand-white: #ffffff;
+
+    /* All Colors */
+    --ds-color-purple-1: #f8f8fa;
+    --ds-color-purple-2: #d5d7fc;
+    --ds-color-purple-3: #7c3085;
+    --ds-color-purple-4: #611f69;
+    --ds-color-purple-5: #4a154b;
+
+    --ds-color-yellow-1: #fff8d9;
+    --ds-color-yellow-2: #f4db6f;
+    --ds-color-yellow-3: #ecb22e;
+    --ds-color-yellow-4: #ecb22e;
+    --ds-color-yellow-5: #ecb22e;
+
+    --ds-color-red-1: #fff2ef;
+    --ds-color-red-2: #fdc9c6;
+    --ds-color-red-3: #e01e5a;
+    --ds-color-red-4: #e01e5a;
+    --ds-color-red-5: #e01e5a;
+
+    --ds-color-blue-1: #f0f8fc;
+    --ds-color-blue-2: #aee1fd;
+    --ds-color-blue-3: #36c5f0;
+    --ds-color-blue-4: #36c5f0;
+    --ds-color-blue-5: #36c5f0;
+
+    --ds-color-orange-1: #fdf7f2;
+    --ds-color-orange-2: #fdd0ae;
+    --ds-color-orange-3: #ecb22e;
+    --ds-color-orange-4: #ecb22e;
+    --ds-color-orange-5: #ecb22e;
+
+    --ds-color-teal-1: #e4fbf7;
+    --ds-color-teal-2: #a1e5dd;
+    --ds-color-teal-3: #2eb67d;
+    --ds-color-teal-4: #2eb67d;
+    --ds-color-teal-5: #2eb67d;
+
+    --ds-color-green-1: #e7ffe7;
+    --ds-color-green-2: #a7eaaa;
+    --ds-color-green-3: #2eb67d;
+    --ds-color-green-4: #2eb67d;
+    --ds-color-green-5: #2eb67d;
+
+    --ds-color-pink-1: #fdf6fb;
+    --ds-color-pink-2: #feccf2;
+    --ds-color-pink-3: #e01e5a;
+    --ds-color-pink-4: #e01e5a;
+    --ds-color-pink-5: #e01e5a;
+
+    /* UI Primary */
+    --ds-ui-primary-weakest: #f8f8fa;
+    --ds-ui-primary-weaker: #d5d7fc;
+    --ds-ui-primary: #4a154b;
+    --ds-ui-primary-stronger: #7c3085;
+    --ds-ui-primary-strongest: #611f69;
+
+    /* UI Secondary */
+    --ds-ui-secondary-weakest: #e7ffe7;
+    --ds-ui-secondary-weaker: #a7eaaa;
+    --ds-ui-secondary: #2eb67d;
+    --ds-ui-secondary-stronger: #0a842a;
+    --ds-ui-secondary-strongest: #156123;
+
+    /* UI Tertiary */
+    --ds-ui-tertiary-weakest: #fdf5f2;
+    --ds-ui-tertiary-weaker: #fdc9c6;
+    --ds-ui-tertiary: #e01e5a;
+    --ds-ui-tertiary-stronger: #cd2553;
+    --ds-ui-tertiary-strongest: #a81227;
+
+    /* Status Colors */
+    --ds-status-warning-weakest: #fff8d9;
+    --ds-status-warning-weaker: #f4db6f;
+    --ds-status-warning: #ecb22e;
+    --ds-status-warning-stronger: #ecb22e;
+    --ds-status-warning-strongest: #ecb22e;
+
+    --ds-status-error-weakest: #fff2ef;
+    --ds-status-error-weaker: #fdc9c6;
+    --ds-status-error: #e01e5a;
+    --ds-status-error-stronger: #d12d37;
+    --ds-status-error-strongest: #a81227;
+
+    --ds-status-success-weakest: #e7ffe7;
+    --ds-status-success-weaker: #a7eaaa;
+    --ds-status-success: #2eb67d;
+    --ds-status-success-stronger: #0a842a;
+    --ds-status-success-strongest: #156123;
+
+    /* Backgrounds */
+    --ds-background-weaker: #f8f8fa;
+    --ds-background: #ffffff;
+    --ds-background-stronger: #f8f8fa;
+    --ds-background-strongest: #ebeaeb;
+    --ds-background-selected: #f8f8fa;
+    --ds-background-inverted: #1d1c1d;
+    --ds-background-overlay: rgba(29, 28, 29, 0.56);
+    --ds-background-overlay-3: rgba(29, 28, 29, 0.03);
+    --ds-background-overlay-5: rgba(29, 28, 29, 0.05);
+    --ds-background-overlay-8: rgba(29, 28, 29, 0.08);
+    --ds-background-overlay-12: rgba(29, 28, 29, 0.12);
+
+    /* Strokes */
+    --ds-stroke-weaker: #d1d2d3;
+    --ds-stroke-default: #b5b2aa;
+    --ds-stroke-stronger: #969696;
+    --ds-stroke-selected: #4a154b;
+
+    /* Text */
+    --ds-text-weakest: #6f6765;
+    --ds-text-weaker: #574e4c;
+    --ds-text-default: #1d1c1d;
+    --ds-text-stronger: #000000;
+    --ds-text-link: #36c5f0;
+    --ds-text-link-hover: #1264a3;
+    --ds-text-inverted: #ffffff;
+
+    /* Gradients */
+    --ds-gradient-gradient-1: linear-gradient(
+      140deg,
+      #ecb22e 0%,
+      #e01e5a 50%,
+      #36c5f0 100%
+    );
+
+    /* SIZES */
+    --ds-size-2: 0.125rem;
+    --ds-size-4: 0.25rem;
+    --ds-size-8: 0.5rem;
+    --ds-size-16: 1rem;
+    --ds-size-20: 1.25rem;
+    --ds-size-24: 1.5rem;
+    --ds-size-32: 2rem;
+    --ds-size-36: 2.25rem;
+    --ds-size-40: 2.5rem;
+    --ds-size-48: 3rem;
+    --ds-space-0: 0;
+    --ds-space-2: 0.125rem;
+    --ds-space-4: 0.25rem;
+    --ds-space-6: 0.375rem; /* Applied only inside a component */
+    --ds-space-8: 0.5rem;
+    --ds-space-12: 0.75rem;
+    --ds-space-16: 1rem;
+    --ds-space-20: 1.25rem;
+    --ds-space-24: 1.5rem;
+    --ds-space-28: 1.75rem;
+    --ds-space-32: 2rem;
+    --ds-space-36: 2.25rem;
+    --ds-space-40: 2.5rem;
+    --ds-space-44: 2.75rem;
+    --ds-space-48: 3rem;
+
+    /* FONTS */
+
+    /* RADIUS */
+    --ds-radius-0: 0;
+    --ds-radius-2: 0.125rem;
+    --ds-radius-4: 0.25rem;
+    --ds-radius-6: 0.375rem;
+    --ds-radius-8: 0.5rem;
+    --ds-radius-12: 0.75rem;
+    --ds-radius-50: 3.125rem;
+
+    /* SHADOWS */
+    --ds-shadow-1: 0 1px 0 0 rgb(12.5% 8.24% 8.24% / 0.08);
+    --ds-shadow-2: 0 2px 4px 0 rgb(12.5% 8.24% 8.24% / 0.12);
+    --ds-shadow-3: 0 9px 24px 8px rgb(12.5% 8.24% 8.24% / 0.05), 0 6px 16px 0
+      rgb(12.5% 8.24% 8.24% / 0.08), 0 3px 6px -4px
+      rgb(12.5% 8.24% 8.24% / 0.12);
+    --ds-shadow-4: 0 0 40px 8px rgb(12.5% 8.24% 8.24% / 0.05);
+    --ds-shadow-5: 0 0 48px 16px rgb(12.5% 8.24% 8.24% / 0.03), 0 0 28px 0
+      rgb(12.5% 8.24% 8.24% / 0.05), 0 0 16px -8px rgb(12.5% 8.24% 8.24% / 0.08);
+    --ds-shadow-inset: inset 0 2px 0 0 rgb(12.5% 8.24% 8.24% / 0.08);
+
+    /* BREAKPOINTS */
+    --ds-breakpoint-xsmall: 30.625rem;
+    --ds-breakpoint-small: 48rem;
+    --ds-breakpoint-medium: 65rem;
+    --ds-breakpoint-large: 90rem;
+    --ds-breakpoint-max-width: 100rem;
+
+    /* OTHER */
+    --ds-size-xsmall: 1.25rem;
+    --ds-size-small: 1.5rem;
+    --ds-size-medium: 2.25rem;
+    --ds-size-large: 3rem;
+
+    /* BORDERS */
+    --ds-border-width-default: 0.0625rem;
+    --ds-border-width-strong: 0.125rem;
+    --ds-border-weak: 0.0625rem solid #d7d3c9;
+    --ds-border-default: 0.0625rem solid #b5b2aa;
+    --ds-border-focus: 0.125rem solid #695be8;
+
+    /* RADIUS */
+    --ds-radius-none: 0;
+    --ds-radius-xsmall: 0.125rem;
+    --ds-radius-small: 0.25rem;
+    --ds-radius-medium: 0.375rem;
+    --ds-radius-large: 0.5rem;
+    --ds-radius-xlarge: 0.75rem;
+    --ds-radius-default: 0.25rem;
+    --ds-radius-pill: 3.125rem;
+
+    /* FONT WEIGHT */
+    --ds-semibold-degular: 600;
+    --ds-medium: 500;
+    --ds-regular: 400;
+    --ds-semi-bold-inter: 600;
+    --ds-bold: 700;
+
+    /* LINE HEIGHT */
+    --ds-line-height-large: 3rem;
+    --ds-line-height-medium: 2.25rem;
+    --ds-line-height-medium-multiline: 2rem;
+    --ds-line-height-small: 1.5rem;
+    --ds-line-height-small-multiline: 1.25rem;
+    --ds-line-height-xsmall: 1.25rem;
+    --ds-line-height-xsmall-multiline: 1rem;
+    --ds-letter-spacing-header: 0.0625rem;
+
+    /* FONT SIZE */
+    --ds-font-size-header-xlarge: 2.25rem;
+    --ds-font-size-header-large: 1.5rem;
+    --ds-font-size-header: 1.125rem;
+    --ds-font-size-title: 1rem; /* Marketing purpose */
+    --ds-font-size-default: 0.875rem;
+    --ds-font-size-small-print: 0.8125rem;
+    --ds-font-size-minimal: 0.75rem;
+  }
+}
+
+/* SHADCN TOKENS */
+@layer base {
+  :root {
+    /* Base colors derived from Brand design tokens */
+    --background: var(--ds-background-stronger);
+    --foreground: var(--ds-text-default);
+    --card: var(--ds-background-weaker);
+    --card-foreground: var(--ds-text-stronger);
+    --popover: var(--ds-background-weaker);
+    --popover-foreground: var(--ds-text-stronger);
+
+    /* Brand colors */
+    --brand-one: var(--ds-brand-one);
+    --brand-one-foreground: var(--ds-brand-one-foreground);
+    --brand-two: var(--ds-brand-two);
+    --brand-two-foreground: var(--ds-brand-two-foreground);
+    --brand-three: var(--ds-brand-three);
+    --brand-three-foreground: var(--ds-brand-three-foreground);
+    --brand-four: var(--ds-brand-four);
+    --brand-four-foreground: var(--ds-brand-four-foreground);
+    --brand-five: var(--ds-brand-five);
+    --brand-five-foreground: var(--ds-brand-five-foreground);
+
+    /* Primary colors */
+    --primary: var(--ds-ui-primary-strongest);
+    --primary-foreground: var(--ds-ui-primary-weakest);
+
+    /* Secondary colors */
+    --secondary: var(--ds-ui-secondary-strongest);
+    --secondary-foreground: var(--ds-ui-secondary-weakest);
+
+    /* Muted colors */
+    --muted: var(--ds-background-strongest);
+    --muted-foreground: var(--ds-text-weakest);
+
+    /* Accent colors */
+    --accent: var(--ds-ui-primary-weakest);
+    --accent-foreground: var(--ds-text-stronger);
+
+    /* Destructive colors */
+    --destructive: var(--ds-status-error);
+    --destructive-foreground: var(--ds-status-error-weakest);
+
+    /* Border and input colors */
+    --border: var(--ds-stroke-weaker);
+    --input: var(--ds-stroke-default);
+    --ring: var(--ds-ui-primary);
+
+    /* Chart colors from Brand's palette */
+    --chart-1: var(--ds-brand-one);
+    --chart-2: var(--ds-brand-two);
+    --chart-3: var(--ds-brand-three);
+    --chart-4: var(--ds-brand-four);
+    --chart-5: var(--ds-brand-five);
+
+    /* Border radius */
+    --radius: var(--ds-radius-medium);
+
+    --sidebar: var(--ds-background);
+    --sidebar-foreground: var(--ds-text-default);
+    --sidebar-primary: var(--ds-brand-one);
+    --sidebar-primary-foreground: var(--ds-brand-one-foreground);
+    --sidebar-accent: var(--ds-brand-one);
+    --sidebar-accent-foreground: var(--ds-brand-one-foreground);
+    --sidebar-border: var(--ds-ui-primary);
+    --sidebar-ring: var(--ds-ui-primary);
+  }
+}
+
+/* THECOLAB.AI BRAND OVERRIDES */
+@layer base {
+  :root {
+    /* thecolab brand palette */
+    --brand-navy: #1c1917;
+    --brand-indigo: #2e4057;
+    --brand-cyan: #0ea5e9;
+    --brand-cyan-dark: #0284c7;
+    --brand-orange: #c2410c;
+    --brand-slate-light: #fbf9f6;
+    --brand-slate-dark: #44403c;
+    --brand-slate-muted: #78716c;
+    --brand-slate-muted-light: #a8a29e;
+    --brand-white: #ffffff;
+
+    /* Remap shadcn tokens to the warm-enterprise theme */
+    --background: var(--brand-slate-light);
+    --foreground: var(--brand-navy);
+    --card: var(--brand-white);
+    --card-foreground: var(--brand-navy);
+    --popover: var(--brand-white);
+    --popover-foreground: var(--brand-navy);
+
+    --primary: var(--brand-navy);
+    --primary-foreground: var(--brand-slate-light);
+    --secondary: #f5f3f0;
+    --secondary-foreground: var(--brand-navy);
+
+    --muted: #f5f3f0;
+    --muted-foreground: var(--brand-slate-muted);
+    --accent: #eef2f6;
+    --accent-foreground: var(--brand-indigo);
+
+    --border: #e7e2da;
+    --input: #e7e2da;
+    --ring: var(--brand-cyan);
+
+    /* Warm-cream sidebar */
+    --sidebar: var(--brand-white);
+    --sidebar-foreground: var(--brand-slate-dark);
+    --sidebar-primary: var(--brand-navy);
+    --sidebar-primary-foreground: var(--brand-slate-light);
+    --sidebar-accent: #f5f3f0;
+    --sidebar-accent-foreground: var(--brand-navy);
+    --sidebar-border: #e7e2da;
+    --sidebar-ring: var(--brand-cyan);
+  }
+}
+
+/* TAILWIND THEME */
+@theme {
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-serif), ui-serif, Georgia, serif;
+  --font-mono: var(--font-mono), ui-monospace, monospace;
+  --font-display: var(--font-serif), Georgia, serif;
+
+  /* thecolab brand colours */
+  --color-brand-navy: var(--brand-navy);
+  --color-brand-indigo: var(--brand-indigo);
+  --color-brand-cyan: var(--brand-cyan);
+  --color-brand-cyan-dark: var(--brand-cyan-dark);
+  --color-brand-orange: var(--brand-orange);
+  --color-brand-slate-light: var(--brand-slate-light);
+  --color-brand-slate-dark: var(--brand-slate-dark);
+  --color-brand-slate-muted: var(--brand-slate-muted);
+  --color-brand-slate-muted-light: var(--brand-slate-muted-light);
+  --color-brand-white: var(--brand-white);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-brand-one: var(--brand-one);
+  --color-brand-two: var(--brand-two);
+  --color-brand-three: var(--brand-three);
+  --color-brand-four: var(--brand-four);
+  --color-brand-five: var(--brand-five);
+  --color-brand-foreground: var(--brand-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --radius: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  --animate-fade-in-scale: fade-in-scale 0.3s ease-out;
+
+  @keyframes fade-in-scale {
+    0% {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@custom-variant dark (&:is(.dark *));
