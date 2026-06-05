@@ -71,7 +71,7 @@ const METHODS: MethodEntry[] = [
   {
     label: "385,025 AS recipients · $42.5m per week",
     calculation:
-      "National Accommodation Supplement recipients and weekly spend, summed across the 12 MSD regions in the HUD dataset: 385,025 recipients, $42,451,479/week (≈$2.2b/yr). Corrects an earlier 769,954 / $84.9m figure that double-counted overlapping area levels.",
+      "National Accommodation Supplement recipients and weekly spend, summed across the 12 MSD regions in the HUD dataset: 385,025 recipients, $42,451,479/week (≈$2.2b/yr). Corrects an earlier 769,954 / $84.9m figure that triple-counted across overlapping geographic levels (Region + TLA + local board).",
     source:
       "public-housing-nz skill — HUD Accommodation Supplement recipients & weekly spend (data.govt.nz), as at 1 Dec 2024",
   },
